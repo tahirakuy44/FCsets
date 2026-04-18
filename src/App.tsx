@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Loader2, Copy, Check, RefreshCw, LogOut } from 'lucide-react';
 import { User } from 'firebase/auth';
-import { auth, loginWithEmail, registerWithEmail, logOut } from './lib/firebase';
+import { auth, loginWithEmail, logOut } from './lib/firebase';
 
 function CookieCard({ server }: { server: any }) {
   const [copied, setCopied] = useState(false);
@@ -41,7 +41,6 @@ export default function App() {
   const [authError, setAuthError] = useState<string | null>(null);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [isLogin, setIsLogin] = useState(true);
   const [data, setData] = useState<any[] | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -82,11 +81,7 @@ export default function App() {
     e.preventDefault();
     setAuthError(null);
     try {
-      if (isLogin) {
-        await loginWithEmail(email, password);
-      } else {
-        await registerWithEmail(email, password);
-      }
+      await loginWithEmail(email, password);
     } catch (error: any) {
       if (error.code === 'auth/invalid-credential' || error.code === 'auth/invalid-email') {
         setAuthError('Email atau password salah.');
@@ -154,19 +149,9 @@ export default function App() {
               type="submit"
               className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-gray-900 text-white rounded-xl hover:bg-gray-800 transition-colors shadow-sm font-medium"
             >
-              {isLogin ? 'Sign In' : 'Sign Up'}
+              Sign In
             </button>
           </form>
-
-          <div className="mt-6 text-sm text-gray-500">
-            {isLogin ? "Don't have an account? " : "Already have an account? "}
-            <button 
-              onClick={() => { setIsLogin(!isLogin); setAuthError(null); }}
-              className="font-medium text-gray-900 hover:underline"
-            >
-              {isLogin ? 'Sign Up' : 'Sign In'}
-            </button>
-          </div>
         </div>
       </div>
     );
